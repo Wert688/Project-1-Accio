@@ -76,25 +76,26 @@ int main(int argc, char *argv[])
   // read/write data from/into the connection
   //int filecntr = 1;
 
-  bool isEnd = false;
+ // bool isEnd = false;
   FILE * pfile;
   
   char *buf = new char[MAX];
-  int loc = 0;
-  int bytesread = 0;
+  //int loc = 0;
+  int bytesread;
 
-  std::cout << "file" + std::to_string((double)filecntr);
-  while (fileExists("file" + std::to_string((double)filecntr)))
+  std::cout << std::to_string((double)filecntr) + ".file\n";
+  while (fileExists(std::to_string((double)filecntr) + ".file"))
   {
 	  filecntr++;
   }
 
-  std::string thefile = argv[2] + std::string("file") + std::to_string((double)filecntr) + ".file";
+  std::string thefile = argv[2] + std::to_string((double)filecntr) + ".file";
   const char* thefchar = thefile.c_str();
   pfile = fopen(thefchar, "w");
-  while (bytesread != 0)
+  while ((bytesread = recv(clientSockfd, buf, sizeof(buf), 0)) != 0)
   {
-	  bytesread = recv(clientSockfd, buf, MAX, 0);
+	  //bytesread = recv(clientSockfd, buf, MAX, 0);
+	  std::cout << "num bytesread is :" + std::to_string((double)bytesread);
 	  if (bytesread < 0)
 	  {
 		  perror("recv");
@@ -103,7 +104,7 @@ int main(int argc, char *argv[])
 	  fwrite(buf, sizeof(char), sizeof(buf), pfile);
   }
   
-  std::cout << "file transferred";
+  std::cout << "file transferred\n";
 
   //set skeleton code aside
   /*char buf[20] = {0};
@@ -133,6 +134,7 @@ int main(int argc, char *argv[])
   }
   */
   delete[] buf;
+  fclose(pfile);
   close(clientSockfd);
   
   return 0;

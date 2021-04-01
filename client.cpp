@@ -10,6 +10,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#define MAX 108000000
 
 int
 main(int argc, char *argv[])
@@ -29,7 +30,7 @@ main(int argc, char *argv[])
 
 
   int port;
-  port = atoi(argv[1]);
+  port = atoi(argv[2]);
   if (port > 65535)
   {
 	  perror("bad port");
@@ -62,11 +63,31 @@ main(int argc, char *argv[])
 
 
   // send/receive data to/from connection
-  bool isEnd = false;
+  //bool isEnd = false;
   std::string input;
-  char *buf = new char[108000000];
+  char *buf = new char[MAX];
+  int sentbytes = 1;
+  FILE * sfile;
   //std::stringstream ss;
 
+  std::cout << "Got to here\n";
+  if (!(sfile = fopen(argv[3], "r")))
+  {
+	  perror("file");
+	  return 5;
+  }
+  std::cout << "file opened successfully\n";
+  while (!feof(sfile))
+  {
+	  if ((sentbytes = fread(&buf, 1, sizeof(buf), sfile)) > 0)
+	  {
+		  std::cout << "file read to buffer successfully\n" << std::flush;
+		  send(sockfd, buf, sentbytes, 0);
+	  }
+	  else
+		  break;
+  }
+  /*
   while (!isEnd) {
     //memset(buf, '\0', sizeof(buf));
 
@@ -90,8 +111,9 @@ main(int argc, char *argv[])
       break;
 
     ss.str("");
-  }
-
+  }*/
+  delete[] buf;
+  fclose(sfile);
   close(sockfd);
 
   return 0;
