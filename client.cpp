@@ -69,6 +69,7 @@ main(int argc, char *argv[])
   int sentbytes = 1;
   int flaps = 0;
   FILE * sfile;
+  long lsize;
   //std::stringstream ss;
 
   std::cout << "Got to here\n";
@@ -77,10 +78,14 @@ main(int argc, char *argv[])
 	  perror("file");
 	  return 5;
   }
+  fseek(sfile, 0, SEEK_END);
+  lsize = ftell(sfile);
+  rewind(sfile);
+
   std::cout << "file opened successfully\n";
   while (!feof(sfile))
   {
-	  if ((sentbytes = fread(buf, 1, sizeof(buf), sfile)) > 0)
+	  if ((sentbytes = fread(buf, sizeof(char), lsize, sfile)) > 0)
 	  {
 		  std::cout << "num abt2snd is :" + std::to_string(sentbytes) + "\n";
 		  std::cout << "file read to buffer successfully\n" << std::flush;

@@ -82,6 +82,7 @@ int main(int argc, char *argv[])
   char *buf = new char[MAX];
   //int loc = 0;
   int bytesread = 1;
+  //std::size_t filesize = 1;
 
   std::cout << std::to_string(filecntr) + ".file\n";
   /*while (fileExists(std::to_string(filecntr) + ".file"))
@@ -101,14 +102,19 @@ int main(int argc, char *argv[])
   std::cout << "num bytesread is :" + std::to_string(bytesread) + "\n";
   while (bytesread != 0)
   {
-	  bytesread = recv(clientSockfd, buf, sizeof(buf), 0);
+
+	  bytesread = recv(clientSockfd, buf, 4098, 0);
 	  std::cout << "num bytesread is :" + std::to_string(bytesread) + "\n";
 	  if (bytesread < 0)
 	  {
 		  perror("recv");
 		  return 5;
 	  }
-	  fwrite(&buf, sizeof(char), sizeof(buf), pfile);
+	  //std::cout << "num bytestot is :" + std::to_string(bytetot) + "\n";
+	  if (bytesread != 0)
+	  {
+		  fwrite(&buf, sizeof(char), bytesread, pfile);
+	  }
   }
   
   std::cout << "file transferred\n";
