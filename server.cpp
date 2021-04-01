@@ -81,27 +81,33 @@ int main(int argc, char *argv[])
   
   char *buf = new char[MAX];
   //int loc = 0;
-  int bytesread;
+  int bytesread = 1;
 
-  std::cout << std::to_string((double)filecntr) + ".file\n";
-  while (fileExists(std::to_string((double)filecntr) + ".file"))
+  std::cout << std::to_string(filecntr) + ".file\n";
+  /*while (fileExists(std::to_string(filecntr) + ".file"))
   {
 	  filecntr++;
-  }
+  }*/
 
-  std::string thefile = argv[2] + std::to_string((double)filecntr) + ".file";
-  const char* thefchar = thefile.c_str();
-  pfile = fopen(thefchar, "w");
-  while ((bytesread = recv(clientSockfd, buf, sizeof(buf), 0)) != 0)
+  std::string thefile = std::string(".") + argv[2]+ "/" + std::to_string(filecntr) + ".file";
+  while (fileExists(thefile))
   {
-	  //bytesread = recv(clientSockfd, buf, MAX, 0);
-	  std::cout << "num bytesread is :" + std::to_string((double)bytesread);
+	  filecntr++;
+	  thefile = std::string(".") + argv[2] + "/" + std::to_string(filecntr) + ".file";
+  }
+  const char* thefchar = thefile.c_str();
+  std::cout << thefchar + std::string("\n");
+  pfile = fopen(thefchar, "w");
+  while (bytesread > 0)
+  {
+	  bytesread = recv(clientSockfd, buf, sizeof(buf), 0);
+	  std::cout << "num bytesread is :" + std::to_string(bytesread) + "\n";
 	  if (bytesread < 0)
 	  {
 		  perror("recv");
 		  return 5;
 	  }
-	  fwrite(buf, sizeof(char), sizeof(buf), pfile);
+	  fwrite(&buf, sizeof(char), sizeof(buf), pfile);
   }
   
   std::cout << "file transferred\n";
