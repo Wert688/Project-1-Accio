@@ -98,7 +98,8 @@ int main(int argc, char *argv[])
   const char* thefchar = thefile.c_str();
   std::cout << thefchar + std::string("\n");
   pfile = fopen(thefchar, "w");
-  while (bytesread > 0)
+  std::cout << "num bytesread is :" + std::to_string(bytesread) + "\n";
+  while (bytesread != 0)
   {
 	  bytesread = recv(clientSockfd, buf, sizeof(buf), 0);
 	  std::cout << "num bytesread is :" + std::to_string(bytesread) + "\n";

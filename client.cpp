@@ -67,6 +67,7 @@ main(int argc, char *argv[])
   std::string input;
   char *buf = new char[MAX];
   int sentbytes = 1;
+  int flaps = 0;
   FILE * sfile;
   //std::stringstream ss;
 
@@ -79,10 +80,12 @@ main(int argc, char *argv[])
   std::cout << "file opened successfully\n";
   while (!feof(sfile))
   {
-	  if ((sentbytes = fread(&buf, 1, sizeof(buf), sfile)) > 0)
+	  if ((sentbytes = fread(buf, 1, sizeof(buf), sfile)) > 0)
 	  {
+		  std::cout << "num abt2snd is :" + std::to_string(sentbytes) + "\n";
 		  std::cout << "file read to buffer successfully\n" << std::flush;
-		  send(sockfd, buf, sentbytes, 0);
+		  flaps = send(sockfd, buf, sentbytes, 0);
+		  std::cout << "num aactual is :" + std::to_string(flaps) + "\n";
 	  }
 	  else
 		  break;
