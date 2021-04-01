@@ -9,9 +9,10 @@
 
 #include <iostream>
 #include <sstream>
+#include <fstream>
 
 int
-main()
+main(int argc, char *argv[])
 {
   // create a socket using TCP IP
   int sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -26,14 +27,23 @@ main()
   //   return 1;
   // }
 
+
+  int port;
+  port = atoi(argv[1]);
+  if (port > 65535)
+  {
+	  perror("bad port");
+	  return 1;
+  }
   struct sockaddr_in serverAddr;
   serverAddr.sin_family = AF_INET;
-  serverAddr.sin_port = htons(40000);     // short, network byte order
+  serverAddr.sin_port = htons(port);     // short, network byte order
   serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
   memset(serverAddr.sin_zero, '\0', sizeof(serverAddr.sin_zero));
 
   // connect to the server
   if (connect(sockfd, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) == -1) {
+	//std::cerr << "ERROR: Failed to connect to the server"
     perror("connect");
     return 2;
   }
@@ -54,11 +64,11 @@ main()
   // send/receive data to/from connection
   bool isEnd = false;
   std::string input;
-  char buf[20] = {0};
-  std::stringstream ss;
+  char *buf = new char[108000000];
+  //std::stringstream ss;
 
   while (!isEnd) {
-    memset(buf, '\0', sizeof(buf));
+    //memset(buf, '\0', sizeof(buf));
 
     std::cout << "send: ";
     std::cin >> input;
