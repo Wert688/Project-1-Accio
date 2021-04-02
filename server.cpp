@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <unistd.h>
+#include <sys/time.h>
 
 #include <iostream>
 #include <sstream>
@@ -31,6 +32,10 @@ int main(int argc, char *argv[])
     perror("setsockopt");
     return 1;
   }
+  struct timeval timeout;
+  timeout.tv_sec = 10;
+  timeout.tv_usec = 0;
+  setsockopt(sockfd, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout));
 
   // bind address to socket
 
